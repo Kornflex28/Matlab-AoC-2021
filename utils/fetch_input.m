@@ -5,9 +5,9 @@ arguments
     d (1,1) {mustBeInteger, mustBeInRange(d,1,31)}
 end
 dbs = dbstack('-completenames');
-path_parts = strsplit(dbs(end).file, filesep);
+path_parts = strsplit(dbs(1).file, filesep);
 home_path = strjoin(path_parts(1:end-2), filesep);
-input_path = sprintf('%s/inputs/day%d.txt',home_path,d);
+input_path = sprintf('%s/inputs/day%02d.txt',home_path,d);
 
 if isfile(input_path)
     inputData = strtrim(fileread(input_path));
