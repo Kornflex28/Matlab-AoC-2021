@@ -55,7 +55,7 @@ function [data] = format_data(data_str)
     data = str2double(split(data_str,','));
 end
 
-    function [population] = pass_day(population)
+function [population] = pass_day(population)
     % Pass one day given a population identified by their internal timer
     pop0 = population(1); % population of internal timer 0
     population = circshift(population,-1);

@@ -17,7 +17,7 @@ legend(barAx,{'Format input','Solve problem'})
 barObj(1).FaceColor = '#FC766A';
 barObj(2).FaceColor = '#5B84B1';
 
-annotation = sprintf('Generated on %s\nhttps://github.com/Kornflex28/Matlab-AoC-2021',datestr(now));
+annotation = sprintf('Generated on %s https://github.com/Kornflex28/Matlab-AoC-2021',datestr(now));
 text(barAx,'String',annotation,...
     'Units','normalized','Position',[0.005 .965],...
     'FontSize',7,'FontAngle','italic')
