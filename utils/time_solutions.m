@@ -22,7 +22,7 @@ for kfun=1:length(times)
     for krun=1:nrun
         truns(krun,:) = function_k(0);
     end
-    times(kfun,:) = median(truns,1); % same as Matlab timeit function
+    times(kfun,:) = mean(truns,1); % Matlab timeit function use median
     erase_string = repmat(sprintf('\b'), 1, length(log_msg));
 end
 end
