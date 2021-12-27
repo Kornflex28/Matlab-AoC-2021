@@ -26,7 +26,7 @@ solution2 = dec_packet.value;
 t_end = toc;
 %% LOGS
 if verbose
-    print_solution(d,double(solution1),double(solution2));
+    print_solution(d,solution1,solution2);
     print_elapsed_time(t_format,t_end);
 end
 

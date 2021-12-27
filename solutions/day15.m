@@ -13,7 +13,7 @@ end
 d = 15;
 input_data_str = fetch_input(d);
 tic;
-[input_data] = format_data(input_data_str);
+[cave_risk_map] = format_data(input_data_str);
 t_format = toc;
 
 
@@ -21,16 +21,16 @@ t_format = toc;
 tic;
 
 % Solution 1
-
-[~, solution1] = get_lowest_risk_path(input_data);
+solution1 = get_lowest_risk(cave_risk_map,1,numel(cave_risk_map));
 
 % Solution 2
-[~, solution2] = get_lowest_risk_path(create_full_map(input_data, 5));
+full_cave_map = create_full_map(cave_risk_map,5);
+solution2 = get_lowest_risk(full_cave_map,1,numel(full_cave_map));
 
 t_end = toc;
 %% LOGS
 if verbose
-    print_solution(d,double(solution1),double(solution2));
+    print_solution(d,solution1,solution2);
     print_elapsed_time(t_format,t_end);
 end
 
@@ -45,46 +45,6 @@ function [data] = format_data(data_str)
     data = str2double(data(:,2:end-1));
 end
 
-function [lowest_path, lowest_risk] = get_lowest_risk_path(data)
-    [nrow,ncol] = size(data);
-    [start_nodes_str, end_nodes_str, weights] = create_nodes(data);
-    G = digraph(start_nodes_str, end_nodes_str, weights);
-    [lowest_path, lowest_risk] = shortestpath(G, '1,1', [num2str(ncol) ',' num2str(nrow)]);
-end
-
-function [start_nodes_str, end_nodes_str, weights] = create_nodes(data)
-
-    [nrow,ncol] = size(data);
-    start_nodes_str = string.empty; 
-    end_nodes_str   = string.empty; 
-    weights         = single.empty;
-
-    for krow = 1:nrow
-        for kcol = 1:ncol
-            if krow > 1
-                start_nodes_str(end+1) = krow + "," + kcol;
-                end_nodes_str(end+1) = (krow-1) + "," + kcol;
-                weights(end+1) = data(krow-1, kcol);
-            end
-            if kcol < ncol
-                start_nodes_str(end+1) = krow + "," + kcol;
-                end_nodes_str(end+1) = krow + "," + (kcol+1);
-                weights(end+1) = data(krow, kcol+1);
-            end
-            if krow < nrow
-                start_nodes_str(end+1) = krow + "," + kcol;
-                end_nodes_str(end+1) = (krow+1) + "," + kcol;
-                weights(end+1) = data(krow+1, kcol);
-            end
-            if kcol > 1
-                start_nodes_str(end+1) = krow + "," + kcol;
-                end_nodes_str(end+1) = krow + "," + (kcol-1);
-                weights(end+1) = data(krow, kcol-1);
-            end
-        end
-    end
-end
-
 function [full_map] = create_full_map(map, n)
     [nrow,ncol] = size(map);
     full_map = repmat(map, n);
@@ -97,5 +57,26 @@ function [full_map] = create_full_map(map, n)
         end
     end
 end
+
+function [lowest_risk] = get_lowest_risk(cave_risk_map,start_node,end_node)
+  [nrow, ncol] = size(cave_risk_map);
+
+  [neighbour_rows, neighbour_cols] = meshgrid(1:nrow, 1:ncol);
+  neighbour_rows = neighbour_rows(:) + [0, 0, -1, 1];
+  neighbour_cols = neighbour_cols(:) + [-1, 1, 0, 0];
+  
+  valid_nodes = neighbour_cols >= 1 & ...
+                neighbour_cols <= nrow & ...
+                neighbour_rows >= 1 & ...
+                neighbour_rows <= ncol;
+
+  nodes_1 = (neighbour_rows(:) - 1) * nrow + neighbour_cols(:);
+  nodes_2 = repmat((1:nrow*ncol)', 4, 1);
+  risks = repmat(cave_risk_map(:), 4, 1);
+  
+  sparsed_cave_risk_map = sparse(nodes_1(valid_nodes), nodes_2(valid_nodes), risks(valid_nodes));
+  lowest_risk = sum(cave_risk_map(shortestpath(digraph(sparsed_cave_risk_map), start_node, end_node))) - cave_risk_map(1,1);
+end
+
 
 end

@@ -13,17 +13,24 @@ nfunc = length(times);
 nrun = 10; % # of runs for each function
 for kfun=1:length(times)
     if kfun == 1
-        erase_string =  '';
+        erase_string1 =  '';
     end
-    log_msg = sprintf('Timing function %d/%d\n',kfun,nfunc);
+    log_msg1 = sprintf('Timing function %d/%d\n',kfun,nfunc);
     function_k = str2func(function_names{kfun});
-    fprintf(1,'%s%s',erase_string, log_msg)
+    fprintf(1,'%s%s',erase_string1, log_msg1)
     truns = zeros(nrun,2);
     for krun=1:nrun
+        if krun == 1
+            erase_string2 =  '';
+        end
+        log_msg2 = sprintf('Run %d/%d\n',krun,nrun);
+        fprintf(1,'%s%s',erase_string2, log_msg2)
         truns(krun,:) = function_k(0);
+        erase_string2 = repmat(sprintf('\b'), 1, length(log_msg2));
     end
-    times(kfun,:) = mean(truns,1); % Matlab timeit function use median
-    erase_string = repmat(sprintf('\b'), 1, length(log_msg));
+    fprintf(1,'%s',erase_string2)
+    times(kfun,:) = median(truns,1); % Matlab timeit function use median
+    erase_string1 = repmat(sprintf('\b'), 1, length(log_msg1));
 end
 end
 

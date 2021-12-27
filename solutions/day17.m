@@ -56,7 +56,7 @@ solution2 = count_valid_initial(valid_steps_x,valid_steps_y);
 t_end = toc;
 %% LOGS
 if verbose
-    print_solution(d,double(solution1),double(solution2));
+    print_solution(d,solution1,solution2);
     print_elapsed_time(t_format,t_end);
 end
 
